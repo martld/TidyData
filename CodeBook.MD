@@ -50,12 +50,12 @@ The training and test data sets are merged into one data set called alldata. The
 
 2.	Joining activity labels to the activity data sets so that they adequately describe each activity.
 
-3.	Use cbind to append main data sets to activity and subject data sets for both test and training data. 
+3.	Using cbind to append main data sets to activity and subject data sets for both test and training data. 
 
     testdata2 <- cbind(subjecttest, activitytest, testdata)
     traindata2 <- cbind(subjecttrain, activitytrain, traindata)
 
-4.	Use rbind to bind the test and training files in the alldata file. 
+4.	Using rbind to bind the test and training files in the alldata file. 
 
     alldata <- rbind(testdata2, traindata2)
 
@@ -66,11 +66,11 @@ The resulting alldata file is further reshaped by eliminating some unwanted colu
 
     getfinalcolumns <- (grepl("activity..",colnames(alldata)) | grepl("subject",colnames(alldata)) | grepl("-mean..",colnames(alldata))     & !grepl("-meanFreq..",colnames(alldata)) & !grepl("mean..-[X-Z]",colnames(alldata)) | grepl("-std..",colnames(alldata)) & !grepl("-     stdFreq..",colnames(alldata)) & !grepl("std..-[X-Z]",colnames(alldata)))
 
-2.	Get just the columns I need for final data set
+2.   Getting just the columns I need for final data set
 
     alldata = alldata[getfinalcolumns==TRUE]
 
-3.  Apply friendly column names for feature columns. I remove parentheses and replace abbreviations with longer names so that the           content of the columns is better understood.
+3.  Applying friendly column names for feature columns. I remove parentheses and replace abbreviations with longer names so that the           content of the columns is better understood.
 
     colnames(alldata) = gsub("\\()","",colnames(alldata))
     colnames(alldata) = gsub("^t","Time",colnames(alldata))
@@ -79,14 +79,14 @@ The resulting alldata file is further reshaped by eliminating some unwanted colu
     colnames(alldata) = gsub("Acc","Accel",colnames(alldata))
     colnames(alldata) = gsub("BodyBody","Body",colnames(alldata))
 
-4.  Extract a data subset that is an average by subject and activity using ddply from plyr package.
+4.  Extracting a data subset that is an average by subject and activity using ddply from plyr package.
 
     alldata_summary <- ddply(alldata, .(subject, activityID, activityDesc), function(m)colMeans(m[, 4:21]))
 
-5.  Write final tidy data set to a file. The final data set has 180 rows (30 subjects with 6 activities each). It has 21 columns (1 each     for subject, activityID and activity description and the 18 selected features that use mean and standard deviation.
+5.  Writing final tidy data set to a file. The final data set has 180 rows (30 subjects with 6 activities each). It has 21 columns (1 each for subject, activityID and activity description and the 18 selected features that use mean and standard deviation.
 
     write.table(alldata_summary, "tidy_data.txt", row.names=FALSE,sep='\t')
 
-6.  Read the tidy data set back into R, if needed.
+6.  Reading the tidy data set back into R, if needed.
  
     tidydataset <- read.table("tidy_data.txt", header = TRUE)
